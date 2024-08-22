@@ -6,9 +6,11 @@
   ],
   "config_flow": true,
   "dependencies": [],
+  "requirements": [
+    "requests"
+  ],
   "documentation": "https://github.com/taliexo/homeassistant-edenic",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/taliexo/homeassistant-edenic",
-  "requirements": [],
   "version": "0.0.1"
 }

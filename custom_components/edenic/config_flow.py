@@ -1,92 +1,66 @@
 """Config flow for Edenic integration."""
-
-from __future__ import annotations
-
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import Any, Dict, Optional
 
 import voluptuous as vol
 from homeassistant import config_entries
+from homeassistant.core import HomeAssistant
+from homeassistant.data_entry_flow import FlowResult
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-if TYPE_CHECKING:
-    from homeassistant.helpers.typing import FlowResult
-
-from custom_components.edenic.client import EdenicClient
-from custom_components.edenic.const import (
-    DOMAIN,
-)
+from .api import EdenicApiClient, EdenicApiError
+from .const import DOMAIN, CONF_API_KEY, CONF_ORGANIZATION_ID
 
 _LOGGER = logging.getLogger(__name__)
 
-CONFIG_SCHEMA = vol.Schema(
-    {
-        vol.Required("api_key"): str,
-        vol.Required("organization_id"): str
-    }
-)
-
-
-class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class EdenicConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Edenic."""
 
     VERSION = 1
 
-    @staticmethod
-    def async_get_options_flow(
-        config_entry: config_entries.ConfigEntry,
-    ) -> config_entries.OptionsFlow:
-        """Create the options flow."""
-        return OptionsFlow(config_entry)
-
     async def async_step_user(
-        self, user_input: dict[str, Any] | None = None
+        self, user_input: Optional[Dict[str, Any]] = None
     ) -> FlowResult:
         """Handle the initial step."""
-        errors: dict[str, str] = {}
+        errors: Dict[str, str] = {}
         if user_input is not None:
             try:
-                client = EdenicClient(
-                    user_input["api_key"], user_input["organization_id"]
-                )
-                await client.get_devices()
-            except Exception:
-                _LOGGER.exception("Unexpected exception")
+                await self.validate_input(self.hass, user_input)
+            except CannotConnect:
                 errors["base"] = "cannot_connect"
+            except InvalidAuth:
+                errors["base"] = "invalid_auth"
+            except Exception:  # pylint: disable=broad-except
+                _LOGGER.exception("Unexpected exception")
+                errors["base"] = "unknown"
             else:
-                await self.async_set_unique_id(f"edenic-{user_input['api_key']}")
-                self._abort_if_unique_id_configured()
-
                 return self.async_create_entry(title="Edenic", data=user_input)
 
         return self.async_show_form(
-            step_id="user", data_schema=CONFIG_SCHEMA, errors=errors
+            step_id="user",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_API_KEY): str,
+                    vol.Required(CONF_ORGANIZATION_ID): str,
+                }
+            ),
+            errors=errors,
         )
 
+    async def validate_input(self, hass: HomeAssistant, data: Dict[str, Any]) -> None:
+        """Validate the user input allows us to connect."""
+        session = async_get_clientsession(hass)
+        client = EdenicApiClient(data[CONF_API_KEY], data[CONF_ORGANIZATION_ID], session)
 
-class OptionsFlow(config_entries.OptionsFlow):
-    """Handle options flow for Edenic."""
+        try:
+            await client.async_get_devices()
+        except EdenicApiError as err:
+            _LOGGER.error("Error occurred: %s", err)
+            raise CannotConnect from err
 
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.config_entry = config_entry
+class CannotConnect(HomeAssistantError):
+    """Error to indicate we cannot connect."""
 
-    async def async_step_init(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
-        """Manage the options."""
-        errors: dict[str, str] = {}
-        if user_input is not None:
-            if not len(errors):
-                new_data = self.config_entry.data.copy()
-
-                self.hass.config_entries.async_update_entry(
-                    self.config_entry,
-                    data=new_data,
-                )
-
-                coordinator: EdenicDataUpdateCoordinator = self.hass.data[DOMAIN][
-                    self.config_entry.entry_id
-                ]
-
-                return self.async_create_entry(title="", data={})
-
+class InvalidAuth(HomeAssistantError):
+    """Error to indicate there is invalid auth."""

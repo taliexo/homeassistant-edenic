@@ -1,122 +1,47 @@
-"""Sensor module for the Edenic integration."""
-
-import logging
-
+"""Support for Edenic sensors."""
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from .const import DOMAIN, SENSOR_TYPES, ATTR_DEVICE_ID, ATTR_DEVICE_NAME, ATTR_DEVICE_TYPE
 
-from .const import DOMAIN
-from .core import EdenicDataUpdateCoordinator
-
-_LOGGER = logging.getLogger(__name__)
-
-
-async def async_setup_entry(
-    hass: HomeAssistant,
-    config_entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
-) -> None:
+async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up Edenic sensors based on a config entry."""
-    coordinator: EdenicDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
-    devices = await coordinator.edenic.get_devices()
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]
 
-    entities = [
-        EdenicSensor(coordinator, device["id"], key)
-        for device in devices
-        for key in ["temperature", "electrical_conductivity", "ph"]
-        if key in await coordinator.edenic.get_device_telemetry(device["id"])
-    ]
+    entities = []
+    for device in coordinator.data:
+        for sensor_type in SENSOR_TYPES:
+            entities.append(EdenicSensor(coordinator, device, sensor_type))
 
-    # Add device attribute sensors
-    for device in devices:
-        device_id = device["id"]
-        attributes = await coordinator.edenic.get_device_attributes(device_id)
-        entities.extend(
-            EdenicDeviceAttributeSensor(coordinator, device_id, key)
-            for key in attributes
-        )
-
-    async_add_entities(entities, update_before_add=True)
-
+    async_add_entities(entities)
 
 class EdenicSensor(CoordinatorEntity, SensorEntity):
     """Representation of an Edenic sensor."""
 
-    def __init__(
-        self, coordinator: EdenicDataUpdateCoordinator, device_id: str, key: str
-    ) -> None:
+    def __init__(self, coordinator, device, sensor_type):
         """Initialize the sensor."""
         super().__init__(coordinator)
-        self._device_id = device_id
-        self._key = key
-        self._attr_name = f"Edenic {key} Sensor"
-        self._attr_unique_id = f"{device_id}_{key}"
-        self._state = None
-
-    async def async_update(self) -> None:
-        """Fetch new state data for the sensor."""
-        try:
-            telemetry = await self.coordinator.edenic.get_device_telemetry(
-                self._device_id
-            )
-            self._state = telemetry.get(self._key, None)
-        except Exception:
-            _LOGGER.exception("Error fetching telemetry data")
-            self._state = None
+        self._device = device
+        self._sensor_type = sensor_type
+        self._attr_unique_id = f"{device['id']}_{sensor_type}"
+        self._attr_name = f"{device['label']} {SENSOR_TYPES[sensor_type]['name']}"
+        self._attr_device_class = SENSOR_TYPES[sensor_type].get('device_class')
+        self._attr_native_unit_of_measurement = SENSOR_TYPES[sensor_type]['unit']
+        self._attr_icon = SENSOR_TYPES[sensor_type]['icon']
 
     @property
-    def state(self) -> str:
+    def native_value(self):
         """Return the state of the sensor."""
-        return self._state
+        if self.coordinator.data:
+            device_data = next((d for d in self.coordinator.data if d['id'] == self._device['id']), None)
+            if device_data and self._sensor_type in device_data:
+                return device_data[self._sensor_type][0]['value']
+        return None
 
     @property
-    def device_info(self) -> dict:
-        """Return device information about this sensor."""
+    def extra_state_attributes(self):
+        """Return the state attributes."""
         return {
-            "identifiers": {(DOMAIN, self._device_id)},
-            "name": self._attr_name,
-            "manufacturer": "Edenic",
-        }
-
-
-class EdenicDeviceAttributeSensor(CoordinatorEntity, SensorEntity):
-    """Representation of an Edenic device attribute sensor."""
-
-    def __init__(
-        self, coordinator: EdenicDataUpdateCoordinator, device_id: str, key: str
-    ) -> None:
-        """Initialize the sensor."""
-        super().__init__(coordinator)
-        self._device_id = device_id
-        self._key = key
-        self._attr_name = f"Edenic {key} Attribute"
-        self._attr_unique_id = f"{device_id}_{key}_attribute"
-        self._state = None
-
-    async def async_update(self) -> None:
-        """Fetch new state data for the sensor."""
-        try:
-            attributes = await self.coordinator.edenic.get_device_attributes(
-                self._device_id
-            )
-            self._state = attributes.get(self._key, None)
-        except Exception:
-            _LOGGER.exception("Error fetching device attributes")
-            self._state = None
-
-    @property
-    def state(self) -> str:
-        """Return the state of the sensor."""
-        return self._state
-
-    @property
-    def device_info(self) -> dict:
-        """Return device information about this sensor."""
-        return {
-            "identifiers": {(DOMAIN, self._device_id)},
-            "name": self._attr_name,
-            "manufacturer": "Edenic",
+            ATTR_DEVICE_ID: self._device['id'],
+            ATTR_DEVICE_NAME: self._device['label'],
+            ATTR_DEVICE_TYPE: self._device['additionalInfo']['deviceSubType'],
         }

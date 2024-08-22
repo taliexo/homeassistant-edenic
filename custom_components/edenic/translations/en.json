@@ -1,39 +1,12 @@
 {
   "config": {
-    "abort": {
-      "already_configured": "Device is already configured"
-    },
-    "error": {
-      "cannot_connect": "Failed to connect",
-      "invalid_auth": "Invalid authentication",
-      "unknown": "Unexpected error"
-    },
     "step": {
       "user": {
+        "title": "Connect to Edenic",
+        "description": "Enter your Edenic API credentials",
         "data": {
-          "organization_id": "Organization ID",
-          "api_key": "API Key"
-        }
-      }
-    }
-  },
-  "options": {
-    "step": {
-      "init": {
-        "title": "Edenic Configuration",
-        "data": {
-          "update_password": "Update Password"
-        },
-        "data_description": {
-          "update_password": "Updating password requires a restart of Home Assistant."
-        }
-      },
-      "notify_restart": {
-        "title": "Restart required",
-        "description": "Restart of Home Assistant is required for password change to take effect.",
-        "menu_options": {
-          "restart_yes": "Restart Now",
-          "restart_no": "Restart Later"
+          "api_key": "API Key",
+          "organization_id": "Organization ID"
         }
       }
     },
@@ -41,17 +14,22 @@
       "cannot_connect": "Failed to connect",
       "invalid_auth": "Invalid authentication",
       "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
     }
   },
-  "sensor": {
-    "temperature": {
-      "name": "Temperature"
-    },
-    "ph": {
-      "name": "pH"
-    },
-    "electrical_conductivity": {
-      "name": "Electrical Conductivity"
+  "entity": {
+    "sensor": {
+      "temperature": {
+        "name": "Temperature"
+      },
+      "electrical_conductivity": {
+        "name": "Electrical Conductivity"
+      },
+      "ph": {
+        "name": "pH"
+      }
     }
   }
 }

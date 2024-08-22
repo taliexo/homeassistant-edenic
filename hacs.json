@@ -1,6 +1,4 @@
 {
     "name": "Edenic",
-    "render_readme": true,
-    "zip_release": true,
-    "filename": "edenic.zip"
+    "render_readme": true
 }

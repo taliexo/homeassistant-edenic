@@ -1,0 +1,150 @@
+6 files left unchanged
+custom_components/edenic/client.py:1:1: D200 One-line docstring should fit on one line
+  |
+1 | / """
+2 | | Client module for interacting with the Edenic API.
+3 | | """
+  | |___^ D200
+4 |   
+5 |   import logging
+  |
+  = help: Reformat to one line
+
+custom_components/edenic/client.py:22:9: D205 1 blank line required between summary line and description
+   |
+21 |       def __init__(self, api_key: str, organization_id: str) -> None:
+22 |           """
+   |  _________^
+23 | | 
+24 | |         Args:
+25 | |         ----
+26 | |             api_key: The API key for authenticating with the Edenic API.
+27 | |             organization_id: The organization ID for the Edenic API.
+28 | | 
+29 | |         """
+   | |___________^ D205
+30 |           self._api_key = api_key
+31 |           self._organization_id = organization_id
+   |
+   = help: Insert single blank line
+
+custom_components/edenic/client.py:22:9: D400 First line should end with a period
+   |
+21 |       def __init__(self, api_key: str, organization_id: str) -> None:
+22 |           """
+   |  _________^
+23 | | 
+24 | |         Args:
+25 | |         ----
+26 | |             api_key: The API key for authenticating with the Edenic API.
+27 | |             organization_id: The organization ID for the Edenic API.
+28 | | 
+29 | |         """
+   | |___________^ D400
+30 |           self._api_key = api_key
+31 |           self._organization_id = organization_id
+   |
+   = help: Add period
+
+custom_components/edenic/client.py:22:9: D415 First line should end with a period, question mark, or exclamation point
+   |
+21 |       def __init__(self, api_key: str, organization_id: str) -> None:
+22 |           """
+   |  _________^
+23 | | 
+24 | |         Args:
+25 | |         ----
+26 | |             api_key: The API key for authenticating with the Edenic API.
+27 | |             organization_id: The organization ID for the Edenic API.
+28 | | 
+29 | |         """
+   | |___________^ D415
+30 |           self._api_key = api_key
+31 |           self._organization_id = organization_id
+   |
+   = help: Add closing punctuation
+
+custom_components/edenic/config_flow.py:86:35: PLR2004 Magic value used in comparison, consider replacing `5` with a constant variable
+   |
+84 |             )
+85 | 
+86 |             if polling_interval < 5:
+   |                                   ^ PLR2004
+87 |                 errors[CONF_POLLING_INTERVAL] = "invalid_polling_interval"
+   |
+
+custom_components/edenic/config_flow.py:98:17: F841 Local variable `coordinator` is assigned to but never used
+    |
+ 96 |                 )
+ 97 | 
+ 98 |                 coordinator: EdenicDataUpdateCoordinator = self.hass.data[DOMAIN][
+    |                 ^^^^^^^^^^^ F841
+ 99 |                     self.config_entry.entry_id
+100 |                 ]
+    |
+    = help: Remove assignment to unused variable `coordinator`
+
+custom_components/edenic/config_flow.py:98:30: F821 Undefined name `EdenicDataUpdateCoordinator`
+    |
+ 96 |                 )
+ 97 | 
+ 98 |                 coordinator: EdenicDataUpdateCoordinator = self.hass.data[DOMAIN][
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ F821
+ 99 |                     self.config_entry.entry_id
+100 |                 ]
+    |
+
+custom_components/edenic/config_flow.py:104:9: RET503 Missing explicit `return` at the end of function able to return non-`None` value
+    |
+102 |                   return self.async_create_entry(title="", data={})
+103 |   
+104 |           cur_value = (
+    |  _________^
+105 | |             int(self.config_entry.data[CONF_POLLING_INTERVAL])
+106 | |             if CONF_POLLING_INTERVAL in self.config_entry.data
+107 | |             and self.config_entry.data[CONF_POLLING_INTERVAL] is not None
+108 | |             else DEFAULT_POLLING_INTERVAL
+109 | |         )
+    | |_________^ RET503
+    |
+    = help: Add explicit `return` statement
+
+custom_components/edenic/config_flow.py:104:9: F841 Local variable `cur_value` is assigned to but never used
+    |
+102 |                 return self.async_create_entry(title="", data={})
+103 | 
+104 |         cur_value = (
+    |         ^^^^^^^^^ F841
+105 |             int(self.config_entry.data[CONF_POLLING_INTERVAL])
+106 |             if CONF_POLLING_INTERVAL in self.config_entry.data
+    |
+    = help: Remove assignment to unused variable `cur_value`
+
+custom_components/edenic/core.py:20:89: E501 Line too long (100 > 88)
+   |
+19 | class EdenicService:
+20 |     """Service layer object responsible for initializing and updating values from the Edenic API."""
+   |                                                                                         ^^^^^^^^^^^^ E501
+21 | 
+22 |     def __init__(self, api_key: str) -> None:
+   |
+
+custom_components/edenic/core.py:48:7: D101 Missing docstring in public class
+   |
+48 | class EdenicDataUpdateCoordinator(DataUpdateCoordinator):
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^ D101
+49 |     def __init__(self, hass, service: EdenicService, polling_interval: int) -> None:
+50 |         """Initialize the data update coordinator."""
+   |
+
+custom_components/edenic/core.py:49:24: ANN001 Missing type annotation for function argument `hass`
+   |
+48 | class EdenicDataUpdateCoordinator(DataUpdateCoordinator):
+49 |     def __init__(self, hass, service: EdenicService, polling_interval: int) -> None:
+   |                        ^^^^ ANN001
+50 |         """Initialize the data update coordinator."""
+51 |         super().__init__(
+   |
+
+Found 12 errors.
+No fixes available (4 hidden fixes can be enabled with the `--unsafe-fixes` option).

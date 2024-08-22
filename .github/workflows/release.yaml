@@ -13,14 +13,14 @@ jobs:
         uses: thedoctor0/zip-release@0.7.1
         with:
           type: 'zip'
-          directory: custom_components/ac_infinity
-          filename: 'ac_infinity.zip'
+          directory: custom_components/edenic
+          filename: 'edenic.zip'
           exclusions: '*.git* .editorconfig *.vscode* *.github*'
       - name: Upload zip to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: custom_components/ac_infinity/ac_infinity.zip
-          asset_name: ac_infinity.zip
+          file: custom_components/edenic/edenic.zip
+          asset_name: edenic.zip
           tag: ${{ github.ref }}
           overwrite: true

@@ -14,3 +14,5 @@ codespell
 ruff
 aioresponses
 mypy
+colorlog
+pip

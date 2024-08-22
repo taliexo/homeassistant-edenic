@@ -1,0 +1,57 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "organization_id": "[%key:common::config_flow::data::organization_id%]",
+          "api_key": "[%key:common::config_flow::data::api_key%]"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Edenic Configuration",
+        "data": {
+          "update_password": "Update Password"
+        },
+        "data_description": {
+          "update_password": "Updating password requires a restart of Home Assistant."
+        }
+      },
+      "notify_restart": {
+        "title": "Restart required",
+        "description": "Restart of Home Assistant is required for password change to take effect.",
+        "menu_options": {
+          "restart_yes": "Restart Now",
+          "restart_no": "Restart Later"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error"
+    }
+  },
+  "sensor": {
+    "temperature": {
+      "name": "Temperature"
+    },
+    "ph": {
+      "name": "pH"
+    },
+    "electrical_conductivity": {
+      "name": "Electrical Conductivity"
+    }
+  }
+}

@@ -1,28 +1,9 @@
-# homeassistant-edenic
-
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
-
-[![codecov](https://codecov.io/gh/taliexo/homeassistant-edenic/graph/badge.svg?token=C4TMDAU344)](https://codecov.io/gh/taliexo/homeassistant-edenic)
-[![Tests](https://github.com/taliexo/homeassistant-edenic/actions/workflows/tests.yaml/badge.svg)](https://github.com/taliexo/homeassistant-edenic/actions/workflows/tests.yaml)
-
-[![HACS/HASS](https://github.com/taliexo/homeassistant-edenic/actions/workflows/validate.yaml/badge.svg)](https://github.com/taliexo/homeassistant-edenic/actions/workflows/validate.yaml)
-[![Code Style](https://github.com/taliexo/homeassistant-edenic/actions/workflows/style.yaml/badge.svg)](https://github.com/taliexo/homeassistant-edenic/actions/workflows/style.yaml)
-[![CodeQL](https://github.com/taliexo/homeassistant-edenic/actions/workflows/codeql.yaml/badge.svg)](https://github.com/taliexo/homeassistant-edenic/actions/workflows/codeql.yaml)
-
-This is a custom component for [Home Assistant](http://home-assistant.io) that adds support for Bluelab devices within the [Edenic app](https://app.edenic.io/) cloud ecosystem.
-
-- [Compatibility](#compatibility)
-- [Installation](#installation)
-  - [HACS](#hacs)
-  - [Manual Installation](#manual-installation)
-- [Initial Setup](#initial-setup)
-  - [Additional Configuration](#additional-configuration)
-- [Entities](#entities)
-  - [Sensors](#sensors)
+# Edenic Integration for Home Assistant
+This custom component allows you to monitor and control your Bluelab Wi-Fi devices in Home Assistant using the Edenic API. The Edenic integration will create sensors for devices pre-configured in the Edenic app and automatically sync with the API for updates.
 
 # Compatibility
 
-This integration requires a Bluelab controller connected to Wi-Fi and configured in the Edenic app.
+This integration requires a Bluelab controller connected to Wi-Fi and pre-configured in the Edenic app.
 
 # Installation
 
@@ -68,7 +49,7 @@ Read-only sensors reported from the controller:
 - `pH`: The pH as reported by the Bluelab probe in your controller.
 - `Electrical Conductivity`: The electrical conductivity as reported by the Bluelab probe in your controller.
 
-## Binary Sensors (coming soon)
+### Binary Sensors (coming soon)
 
 Read-only alarms reported from the controller:
 
@@ -79,7 +60,7 @@ Read-only alarms reported from the controller:
 - `EC High Alarm`: Triggered when the electrical conductivity measurement is equal to or above the set EC High Alarm setting.
 - `EC Low Alarm`: Triggered when the electrical conductivity measurement is equal to or below the set EC Low Alarm setting.
 
-## Input Numbers (coming soon)
+### Input Numbers (coming soon)
 
 Editable settings for the controller:
 

@@ -12,5 +12,5 @@
   "documentation": "https://github.com/taliexo/homeassistant-edenic",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/taliexo/homeassistant-edenic",
-  "version": "0.0.1"
+  "version": "0.0.2"
 }

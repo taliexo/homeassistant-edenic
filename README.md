@@ -9,7 +9,7 @@
 [![Code Style](https://github.com/taliexo/homeassistant-edenic/actions/workflows/style.yaml/badge.svg)](https://github.com/taliexo/homeassistant-edenic/actions/workflows/style.yaml)
 [![CodeQL](https://github.com/taliexo/homeassistant-edenic/actions/workflows/codeql.yaml/badge.svg)](https://github.com/taliexo/homeassistant-edenic/actions/workflows/codeql.yaml)
 
-This is a custom component for [Home Assistant](http://home-assistant.io) that adds support for [Edenic](https://endenic.io/) Bluelab devices within the [Endenic app](https://app.edenic.io/) cloud ecosystem.
+This is a custom component for [Home Assistant](http://home-assistant.io) that adds support for Bluelab devices within the [Edenic app](https://app.edenic.io/) cloud ecosystem.
 
 - [Compatibility](#compatibility)
 - [Installation](#installation)
@@ -22,40 +22,73 @@ This is a custom component for [Home Assistant](http://home-assistant.io) that a
 
 # Compatibility
 
-This integration requires the controller be connected to Wifi, and thus is not compatible with bluetooth only devices.
+This integration requires a Bluelab controller connected to Wi-Fi and configured in the Edenic app.
 
 # Installation
 
 ## HACS
 
-This integration is made available through the Home Assistant Community Store default feed. Simply search for "Edenic" and install it directly from HACS.
-
-![HACS-Instal](/images/hacs-install.png)
+This integration is not yet available through the Home Assistant Community Store. Manually add this repository as a custom repository in HACS.
 
 Please see the [official HACS documentation](https://hacs.xyz) for information on how to install and use HACS.
 
 ## Manual Installation
 
-Copy `custom_components/edenic` into your Home Assistant `$HA_HOME/config` directory, then restart Home Assistant
+Copy `custom_components/edenic` into your Home Assistant `$HA_HOME/config` directory, then restart Home Assistant.
 
 # Initial Setup
-Add an integration entry as normal from integration section of the home assistant settings. You'll need the following configuration items
+
+Add the Edenic integration from the integration section of the Home Assistant settings. You'll need to input the following credentials obtained from the [Edenic app](https://app.edenic.io/):
 
 - `API Key`: The API key for your Edenic account.
 - `Organization ID`: The organization ID for your Edenic account.
 
-![Initial-Setup](/images/initial-setup.png)
+## Create an API key
 
-## Additional Configuration
+1. Open the [Edenic app](https://app.edenic.io/) and sign in.
+2. Click on your account avatar (in the top right) and navigate to Account settings > API Keys (you must be registered to see this).
+3. Click Create new key and give your key a name (**note this key will expire in 1 year**).
+4. Copy the API key or organization ID from here at anytime.
 
-After adding an integration entry, the following additional configurations can be modified via the configuration options dialog.
+## Configuration Options
 
-- `Update API Key`: When provided, updates the API key used to connect to your Edenic account. Requires Home Assistant restart.
+After adding the integration, the following options can be modified via the configuration options dialog:
 
-![Additional-Configuration](/images/additional-configuration.png)
+- `Temperature Unit`: Choose between Celsius and Fahrenheit.
+- `Conductivity Unit`: Choose between mS, µS, PPM 500, and PPM 700.
+- `Scan Interval`: Set the interval for scanning devices, with a minimum value of 60 seconds due to rate limits with the Edenic API.
+
+# Entities
 
 ## Sensors
-Read Only sensors reported from the controller
-- `Temperature`: The temperature as reported by the Bluelab probe.
-- `pH`: The pH as reported by the Bluelab probe.
-- `Electrical Conductivity`: The electrical conductivity as reported by the Bluelab probe.
+
+Read-only sensors reported from the controller:
+
+- `Temperature`: The temperature as reported by the Bluelab probe in your controller.
+- `pH`: The pH as reported by the Bluelab probe in your controller.
+- `Electrical Conductivity`: The electrical conductivity as reported by the Bluelab probe in your controller.
+
+## Binary Sensors (coming soon)
+
+Read-only alarms reported from the controller:
+
+- `pH High Alarm`: Triggered when the pH measurement is equal to or above the set pH High Alarm setting.
+- `pH Low Alarm`: Triggered when the pH measurement is equal to or below the set pH Low Alarm setting.
+- `Temperature High Alarm`: Triggered when the temperature measurement is equal to or above the set Temperature High Alarm setting.
+- `Temperature Low Alarm`: Triggered when the temperature measurement is equal to or below the set Temperature Low Alarm setting.
+- `EC High Alarm`: Triggered when the electrical conductivity measurement is equal to or above the set EC High Alarm setting.
+- `EC Low Alarm`: Triggered when the electrical conductivity measurement is equal to or below the set EC Low Alarm setting.
+
+## Input Numbers (coming soon)
+
+Editable settings for the controller:
+
+- `Control Mode`: Choose between "MONITOR" or "CONTROL".
+- `Required pH`: Set the required pH value (Range: 0.1 - 13.9).
+- `pH Low Alarm`: Set the pH low alarm value (Range: 0.0 - 13.8).
+- `pH High Alarm`: Set the pH high alarm value (Range: 0.2 - 14.0).
+- `EC Low Alarm`: Set the EC low alarm value (Range: 0.0 - 4.8).
+- `EC High Alarm`: Set the EC high alarm value (Range: 0.2 - 5.0).
+- `Temperature Low Alarm`: Set the temperature low alarm value (Range: 0 - 47°C).
+- `Temperature High Alarm`: Set the temperature high alarm value (Range: 3 - 50°C).
+

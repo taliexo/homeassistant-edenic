@@ -2,8 +2,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect to Edenic",
-        "description": "Enter your Edenic API credentials",
+        "title": "Connect to Edenic API",
+        "description": "Enter your Edenic API credentials from https://app.edenic.io/",
         "data": {
           "api_key": "API Key",
           "organization_id": "Organization ID"
@@ -17,6 +17,19 @@
     },
     "abort": {
       "already_configured": "Device is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Edenic",
+        "description": "Adjust Edenic integration settings",
+        "data": {
+          "scan_interval": "Scan Interval in seconds (min 60)",
+          "temperature_unit": "Temperature Unit",
+          "conductivity_unit": "Conductivity Unit"
+        }
+      }
     }
   },
   "entity": {

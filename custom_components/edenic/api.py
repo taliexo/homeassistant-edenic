@@ -1,6 +1,7 @@
 """API client for Edenic."""
 import aiohttp
 import async_timeout
+import asyncio
 from .const import API_BASE_URL
 
 class EdenicApiClient:
@@ -23,16 +24,25 @@ class EdenicApiClient:
         return await self._api_request("GET", url)
 
     async def _api_request(self, method, url, data=None):
-        """Make an API request."""
+        """Make an API request with retry logic in case of rate limit."""
         headers = {"Authorization": self._api_key}
+        max_retries = 10
+        retry_delay = 2  # initial delay in seconds
 
-        try:
-            async with async_timeout.timeout(10):
-                async with self._session.request(method, url, headers=headers, json=data) as resp:
-                    resp.raise_for_status()
-                    return await resp.json()
-        except aiohttp.ClientError as err:
-            raise EdenicApiError(f"Error communicating with API: {err}")
+        for attempt in range(max_retries):
+            try:
+                async with async_timeout.timeout(10):
+                    async with self._session.request(method, url, headers=headers, json=data) as resp:
+                        resp.raise_for_status()
+                        return await resp.json()
+            except aiohttp.ClientResponseError as err:
+                if err.status == 400 and attempt < max_retries - 1:
+                    await asyncio.sleep(retry_delay)
+                    retry_delay *= 2  # exponential backoff
+                else:
+                    raise EdenicApiError(f"Error communicating with API: {err}")
+            except aiohttp.ClientError as err:
+                raise EdenicApiError(f"Error communicating with API: {err}")
 
 class EdenicApiError(Exception):
     """Raised when there is an error with the Edenic API."""

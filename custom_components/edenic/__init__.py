@@ -1,4 +1,4 @@
-"""The Edenic API integration."""
+"""The Edenic integration."""
 import asyncio
 import logging
 from datetime import timedelta
@@ -10,7 +10,11 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import EdenicApiClient, EdenicApiError
-from .const import DOMAIN, CONF_API_KEY, CONF_ORGANIZATION_ID, DEFAULT_SCAN_INTERVAL
+from .const import (
+    DOMAIN, CONF_API_KEY, CONF_ORGANIZATION_ID, CONF_SCAN_INTERVAL,
+    DEFAULT_SCAN_INTERVAL, CONF_TEMP_UNIT, DEFAULT_TEMP_UNIT,
+    CONF_CONDUCTIVITY_UNIT, DEFAULT_CONDUCTIVITY_UNIT
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -20,7 +24,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Edenic from a config entry."""
     api_key = entry.data[CONF_API_KEY]
     organization_id = entry.data[CONF_ORGANIZATION_ID]
-    scan_interval = entry.data.get("scan_interval", DEFAULT_SCAN_INTERVAL)
+
+    # Use options if set, otherwise use defaults
+    scan_interval = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    temp_unit = entry.options.get(CONF_TEMP_UNIT, DEFAULT_TEMP_UNIT)
+    conductivity_unit = entry.options.get(CONF_CONDUCTIVITY_UNIT, DEFAULT_CONDUCTIVITY_UNIT)
 
     session = async_get_clientsession(hass)
     client = EdenicApiClient(api_key, organization_id, session)
@@ -33,6 +41,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
+    entry.async_on_unload(entry.add_update_listener(update_listener))
+
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -42,6 +52,10 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
+
+async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Update listener."""
+    await hass.config_entries.async_reload(entry.entry_id)
 
 class EdenicDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching Edenic data."""

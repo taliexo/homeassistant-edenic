@@ -4,9 +4,13 @@
 
 This custom component allows you to monitor and control your Bluelab devices in Home Assistant. The Edenic integration will create sensors for any devices configured in the Edenic app and automatically sync with the Edenic API for updates.
 
-# Compatibility
+### Compatibility
 
 This integration supports Bluelab monitors and controllers that are compaitble with the Edenic app. See [compatible devices from Bluelab](https://www.edenic.io/#hardware) for more information.
+
+### Disclaimer
+
+This integration is not officially supported by Edenic and has only been tested with a Bluelab Guardian Wi-Fi Controller. Use at your own risk.
 
 # Installation
 

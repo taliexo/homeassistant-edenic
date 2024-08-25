@@ -1,9 +1,9 @@
 # Edenic Integration for Home Assistant
-This custom component allows you to monitor and control your Bluelab Wi-Fi devices in Home Assistant using the Edenic API. The Edenic integration will create sensors for devices pre-configured in the Edenic app and automatically sync with the API for updates.
+This custom component allows you to monitor and control your Bluelab devices in Home Assistant. The Edenic integration will create sensors for any devices configured in the Edenic app and automatically sync with the Edenic API for updates.
 
 # Compatibility
 
-This integration requires a Bluelab controller connected to Wi-Fi and pre-configured in the Edenic app.
+This integration supports Bluelab monitors and controllers that are compaitble with the Edenic app. See [compatible devices from Bluelab](https://www.edenic.io/#hardware) for more information.
 
 # Installation
 
@@ -43,15 +43,15 @@ After adding the integration, the following options can be modified via the conf
 
 ## Sensors
 
-Read-only sensors reported from the controller:
+Read-only sensors reported from the Edenic app:
 
 - `Temperature`: The temperature as reported by the Bluelab probe in your controller.
 - `pH`: The pH as reported by the Bluelab probe in your controller.
 - `Electrical Conductivity`: The electrical conductivity as reported by the Bluelab probe in your controller.
 
-### Binary Sensors (coming soon)
+### Binary Sensors (to-do)
 
-Read-only alarms reported from the controller:
+Read-only alarms reported from the Edenic app:
 
 - `pH High Alarm`: Triggered when the pH measurement is equal to or above the set pH High Alarm setting.
 - `pH Low Alarm`: Triggered when the pH measurement is equal to or below the set pH Low Alarm setting.
@@ -60,7 +60,7 @@ Read-only alarms reported from the controller:
 - `EC High Alarm`: Triggered when the electrical conductivity measurement is equal to or above the set EC High Alarm setting.
 - `EC Low Alarm`: Triggered when the electrical conductivity measurement is equal to or below the set EC Low Alarm setting.
 
-### Input Numbers (coming soon)
+### Numbers (to-do)
 
 Editable settings for the controller:
 

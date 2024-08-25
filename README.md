@@ -1,3 +1,5 @@
+![Edenic Logo](https://raw.githubusercontent.com/taliexo/homeassistant-edenic/main/images/edenic-logo.svg)
+
 # Edenic Integration for Home Assistant
 This custom component allows you to monitor and control your Bluelab devices in Home Assistant. The Edenic integration will create sensors for any devices configured in the Edenic app and automatically sync with the Edenic API for updates.
 
